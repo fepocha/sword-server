@@ -1,0 +1,13 @@
+###
+
+GET http://localhost:8000/words
+
+###
+
+POST http://localhost:8000/words
+Content-Type: application/json;charset=UTF-8
+
+{
+    "word": "sword",
+    "description": "The first word.."
+}

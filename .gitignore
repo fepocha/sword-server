@@ -1,0 +1,13 @@
+# dotenv environment variables file
+.env
+.env.local
+.env.production
+
+# Dependency directories
+node_modules/
+
+# build output
+/dist
+
+# IDE config
+.idea

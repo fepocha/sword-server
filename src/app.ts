@@ -15,18 +15,16 @@ const port = process.env.PORT || '8000';
 main();
 
 async function main() {
-    try {
-        const { connections } = await mongoose.connect(
-            config.MONGODB_URI || '',
-        );
-        console.log('successful mongo connection');
-        connections.forEach((connection) => {
-            console.log('mongodb host: ' + connection.host);
-            console.log('mongodb port: ' + connection.port);
-        });
-    } catch (err) {
-        console.log(err);
-    }
+  try {
+    const { connections } = await mongoose.connect(config.MONGODB_URI || '');
+    console.log('successful mongo connection');
+    connections.forEach((connection) => {
+      console.log('mongodb host: ' + connection.host);
+      console.log('mongodb port: ' + connection.port);
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // view engine setup
@@ -43,13 +41,13 @@ app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    next(createError(404));
+  next(createError(404));
 });
 
 // error handler
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
-    res.status(err.status || 500);
-    res.json(err);
+  res.status(err.status || 500);
+  res.json(err);
 };
 app.use(errorHandler);
 
@@ -59,8 +57,7 @@ const server = http.createServer(app);
 
 server.listen(port);
 server.on('listening', () => {
-    const addr = server.address();
-    const bind =
-        typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
-    console.log('Listening on ' + bind);
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
+  console.log('Listening on ' + bind);
 });

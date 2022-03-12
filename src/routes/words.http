@@ -9,5 +9,33 @@ Content-Type: application/json;charset=UTF-8
 
 {
     "word": "sword",
-    "description": "The first word.."
+    "description": "The first word..",
+    "createdBy": "test-user"
+}
+
+###
+
+POST http://localhost:8000/words/622c96c391960a34b8d2f707/answers
+Content-Type: application/json;charset=UTF-8
+
+{
+    "step": 0,
+    "answer": [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]],
+    "isSolved": false
+}
+
+###
+
+GET http://localhost:8000/words/622c96c391960a34b8d2f707
+
+
+###
+
+PUT http://localhost:8000/words/622c96c391960a34b8d2f707/answers/622c992832f6c3ee2abed9bf
+Content-Type: application/json;charset=UTF-8
+
+{
+    "step": 1,
+    "answer": [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]],
+    "isSolved": false
 }

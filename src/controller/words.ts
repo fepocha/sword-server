@@ -4,7 +4,7 @@ import Answers from '../models/Answers';
 
 export const getWords: RequestHandler = async (req, res, next) => {
   try {
-    const words = await Words.find().exec();
+    const words = await Words.find().select('-updatedAt').exec();
 
     res.json(words);
   } catch (e) {
@@ -31,12 +31,12 @@ export const createWord: RequestHandler = async (req, res, next) => {
 export const getWordDetails: RequestHandler = async (req, res, next) => {
   try {
     const { wordId } = req.params;
-    const [words, answers] = await Promise.all([
-      Words.findById(wordId).select('-updatedAt').lean().exec(),
-      Answers.find({ word: wordId }).select('-updatedAt').lean().exec(),
+    const [word, answers] = await Promise.all([
+      Words.findById(wordId).select('-updatedAt').exec(),
+      Answers.find({ word: wordId }).select('-updatedAt').exec(),
     ]);
 
-    res.json({ words, answers });
+    res.json({ ...word.toJSON(), answers });
   } catch (e) {
     next(e);
   }

@@ -28,6 +28,17 @@ export const createWord: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const isValidWordText: RequestHandler = async (req, res, next) => {
+  try {
+    const { text } = req.query;
+    const word = await Words.exists({ word: text }).exec();
+
+    res.json({ isValid: !word });
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const getWordDetails: RequestHandler = async (req, res, next) => {
   try {
     const { wordId } = req.params;

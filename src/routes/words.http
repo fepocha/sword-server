@@ -4,6 +4,10 @@ GET http://localhost:8000/words
 
 ###
 
+GET http://localhost:8000/words/validation?text=sword
+
+###
+
 POST http://localhost:8000/words
 Content-Type: application/json;charset=UTF-8
 

@@ -47,14 +47,14 @@ export const createAnswer: RequestHandler = async (req, res, next) => {
     const { wordId } = req.params;
     const { step, answer, isSolved } = req.body;
 
-    const newWord = await new Answers({
+    const newAnswer = await new Answers({
       step,
       answer,
       isSolved,
       word: wordId,
     }).save();
 
-    res.json(newWord);
+    res.json(newAnswer);
   } catch (e) {
     next(e);
   }
@@ -65,7 +65,7 @@ export const updateAnswer: RequestHandler = async (req, res, next) => {
     const { wordId, answerId } = req.params;
     const { step, answer, isSolved } = req.body;
 
-    const newWord = await Answers.findByIdAndUpdate(
+    const newAnswer = await Answers.findByIdAndUpdate(
       answerId,
       {
         step,
@@ -78,7 +78,7 @@ export const updateAnswer: RequestHandler = async (req, res, next) => {
       .lean()
       .exec();
 
-    res.json(newWord);
+    res.json(newAnswer);
   } catch (e) {
     next(e);
   }

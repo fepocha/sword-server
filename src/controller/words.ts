@@ -1,6 +1,9 @@
 import { RequestHandler } from 'express';
 import Words from '../models/Words';
 import Answers from '../models/Answers';
+import createHttpError from 'http-errors';
+import { isWordInDictionary } from '../services/DictionaryService';
+import { getResultAnswer } from '../services/WordService';
 
 export const getWords: RequestHandler = async (req, res, next) => {
   try {
@@ -14,26 +17,40 @@ export const getWords: RequestHandler = async (req, res, next) => {
 
 export const createWord: RequestHandler = async (req, res, next) => {
   try {
-    const { word, description, createdBy } = req.body;
+    const { description, createdBy } = req.body;
+    const word = req.body.word.toUpperCase();
+
+    const isValidWord = await isWordInDictionary(word);
+    if (!isValidWord) {
+      throw createHttpError(400, 'word is not in dictionary');
+    }
 
     const newWord = await new Words({
-      word,
+      word: word.toUpperCase(),
       description,
       createdBy,
     }).save();
 
     res.json(newWord);
-  } catch (e) {
+  } catch (e: any) {
+    if (e.code === 11000) {
+      next(createHttpError(400, 'word must be unique'));
+    }
+
     next(e);
   }
 };
 
-export const isValidWordText: RequestHandler = async (req, res, next) => {
+export const getRandomWord: RequestHandler = async (req, res, next) => {
   try {
-    const { text } = req.query;
-    const word = await Words.exists({ word: text }).exec();
+    const excludedWords = req.query.excludedWords || [];
+    const count = await Words.count({ _id: { $nin: excludedWords } }).exec();
+    const randomIndex = Math.floor(Math.random() * count);
+    const word = await Words.findOne({ _id: { $nin: excludedWords } })
+      .skip(randomIndex)
+      .exec();
 
-    res.json({ isValid: !word });
+    res.json(word);
   } catch (e) {
     next(e);
   }
@@ -56,17 +73,24 @@ export const getWordDetails: RequestHandler = async (req, res, next) => {
 export const createAnswer: RequestHandler = async (req, res, next) => {
   try {
     const { wordId } = req.params;
-    const { step, answer, isSolved } = req.body;
+    const answer = req.body.answer.toUpperCase();
+
+    const { isSolved, result, word } = await getResultAnswer(answer, wordId);
 
     const newAnswer = await new Answers({
-      step,
-      answer,
+      step: 0,
+      answers: [answer],
       isSolved,
-      word: wordId,
+      word,
+      wordId,
+      answerMatrix: [result],
     }).save();
 
     res.json(newAnswer);
-  } catch (e) {
+  } catch (e: any) {
+    if (e.code === 11000) {
+      next(createHttpError(400, 'answer must be unique'));
+    }
     next(e);
   }
 };
@@ -74,23 +98,23 @@ export const createAnswer: RequestHandler = async (req, res, next) => {
 export const updateAnswer: RequestHandler = async (req, res, next) => {
   try {
     const { wordId, answerId } = req.params;
-    const { step, answer, isSolved } = req.body;
+    const answer = req.body.answer.toUpperCase();
+
+    const { isSolved, result } = await getResultAnswer(answer, wordId);
 
     const newAnswer = await Answers.findByIdAndUpdate(
       answerId,
       {
-        step,
-        answer,
+        $inc: { step: 1 },
+        $push: { answers: answer, answerMatrix: result },
         isSolved,
-        word: wordId,
       },
       { new: true },
-    )
-      .lean()
-      .exec();
+    ).exec();
 
     res.json(newAnswer);
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };

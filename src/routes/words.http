@@ -4,6 +4,13 @@ GET http://localhost:8000/words
 
 ###
 
+GET http://localhost:8000/words/random?
+  excludedWords[]=62523bb64971aa0675bf6936&
+  excludedWords[]=62523bc44971aa0675bf6938&
+  excludedWords[]=625235a3c9b6bd3d2d2c95c0
+
+###
+
 GET http://localhost:8000/words/validation?text=sword
 
 ###
@@ -12,20 +19,18 @@ POST http://localhost:8000/words
 Content-Type: application/json;charset=UTF-8
 
 {
-    "word": "sword",
+    "word": "dandy",
     "description": "The first word..",
     "createdBy": "test-user"
 }
 
 ###
 
-POST http://localhost:8000/words/622c96c391960a34b8d2f707/answers
+POST http://localhost:8000/words/6251963a41d74d263156f689/answers
 Content-Type: application/json;charset=UTF-8
 
 {
-    "step": 0,
-    "answer": [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]],
-    "isSolved": false
+    "answer": "hotel"
 }
 
 ###
@@ -35,11 +40,9 @@ GET http://localhost:8000/words/622c96c391960a34b8d2f707
 
 ###
 
-PUT http://localhost:8000/words/622c96c391960a34b8d2f707/answers/622c992832f6c3ee2abed9bf
+PUT http://localhost:8000/words/6251963a41d74d263156f689/answers/625233cfd1b807a06106c571
 Content-Type: application/json;charset=UTF-8
 
 {
-    "step": 1,
-    "answer": [["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"], ["0", "0", "0", "0"]],
-    "isSolved": false
+    "answer": "unite"
 }

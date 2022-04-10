@@ -9,8 +9,10 @@ import logger from 'morgan';
 import config from './config';
 import indexRouter from './routes';
 
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || '8000';
+const whiteList = ['http://localhost:3000', 'https://www.wordssay.com'];
 
 main();
 
@@ -27,6 +29,12 @@ async function main() {
   }
 }
 
+app.use(
+  cors({
+    origin: whiteList,
+    credential: true,
+  }),
+);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

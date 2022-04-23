@@ -28,11 +28,13 @@ async function main() {
     console.log(err);
   }
 }
-
 app.use(
   cors({
-    origin: whiteList,
-    credential: true,
+    origin: function (origin: string, callback: any) {
+      const isSafeOrigin = whiteList.indexOf(origin) !== -1;
+      callback(null, isSafeOrigin);
+    },
+    credentials: true,
   }),
 );
 // view engine setup

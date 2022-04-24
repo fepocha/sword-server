@@ -70,6 +70,18 @@ export const getWordDetails: RequestHandler = async (req, res, next) => {
   }
 };
 
+export const getAnswer: RequestHandler = async (req, res, next) => {
+  try {
+    const { answerId } = req.params;
+
+    const newAnswer = await Answers.findById(answerId).lean().exec();
+
+    res.json(newAnswer);
+  } catch (e: any) {
+    next(e);
+  }
+};
+
 export const createAnswer: RequestHandler = async (req, res, next) => {
   try {
     const { wordId } = req.params;

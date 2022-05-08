@@ -50,7 +50,16 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
       .skip(randomIndex)
       .exec();
 
-    res.json(word);
+    const newAnswer = await new Answers({
+      step: 0,
+      answers: [],
+      isSolved: false,
+      word: word.word,
+      wordId: word._id,
+      answerMatrix: [],
+    }).save();
+
+    res.json({ ...word, answerId: newAnswer._id });
   } catch (e) {
     next(e);
   }

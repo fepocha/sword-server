@@ -56,7 +56,7 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
       isSolved: false,
       word: word.word,
       wordId: word._id,
-      answerMatrix: [],
+      answerMatrix: [[]],
     }).save();
 
     res.json({ ...word, answerId: newAnswer._id });
@@ -87,31 +87,6 @@ export const getAnswer: RequestHandler = async (req, res, next) => {
 
     res.json(newAnswer);
   } catch (e: any) {
-    next(e);
-  }
-};
-
-export const createAnswer: RequestHandler = async (req, res, next) => {
-  try {
-    const { wordId } = req.params;
-    const answer = req.body.answer.toUpperCase();
-
-    const { isSolved, result, word } = await getResultAnswer(answer, wordId);
-
-    const newAnswer = await new Answers({
-      step: 0,
-      answers: [answer],
-      isSolved,
-      word,
-      wordId,
-      answerMatrix: [result],
-    }).save();
-
-    res.json(newAnswer);
-  } catch (e: any) {
-    if (e.code === 11000) {
-      next(createHttpError(400, 'answer must be unique'));
-    }
     next(e);
   }
 };

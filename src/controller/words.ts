@@ -56,7 +56,7 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
       isSolved: false,
       word: word.word,
       wordId: word._id,
-      answerMatrix: [[]],
+      answerMatrix: [],
     }).save();
 
     res.json({ ...word.toJSON(), answerId: newAnswer._id });

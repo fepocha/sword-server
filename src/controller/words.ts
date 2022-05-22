@@ -48,6 +48,7 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
     const randomIndex = Math.floor(Math.random() * count);
     const word = await Words.findOne({ _id: { $nin: excludedWords } })
       .skip(randomIndex)
+      .lean()
       .exec();
 
     const newAnswer = await new Answers({

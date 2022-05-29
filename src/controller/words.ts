@@ -114,3 +114,34 @@ export const updateAnswer: RequestHandler = async (req, res, next) => {
     next(e);
   }
 };
+
+export const getWordResults: RequestHandler = async (req, res, next) => {
+  try {
+    const { wordId } = req.params;
+
+    const word = await Words.findById(wordId);
+    const answers = await Answers.find({ wordId }).exec();
+
+    const solvedAnswers = answers
+      .map((answer) => answer.toJSON())
+      .filter(({ isSolved }) => isSolved);
+    const failedAnswers = answers.filter(
+      ({ isSolved, step, maxStep }) => !isSolved && step === maxStep,
+    );
+
+    const results = {
+      word: word.toJSON(),
+      solvedAnswers,
+      statistics: {
+        answersCount: answers.length,
+        win: solvedAnswers.length,
+        lose: failedAnswers.length,
+        winningRate: Math.round((solvedAnswers.length / answers.length) * 100),
+      },
+    };
+
+    res.json(results);
+  } catch (e) {
+    next(e);
+  }
+};

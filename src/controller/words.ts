@@ -136,6 +136,7 @@ export const getWordResults: RequestHandler = async (req, res, next) => {
         answersCount: answers.length,
         win: solvedAnswers.length,
         lose: failedAnswers.length,
+        winningRate: Math.round((solvedAnswers.length / answers.length) * 100),
       },
     };
 

@@ -1,22 +1,16 @@
-import express from 'express';
-import {
-  createWord,
-  getAnswer,
-  getRandomWord,
-  getWordDetails,
-  getWords,
-  updateAnswer,
-  getWordResults,
-} from '../controller/words';
+const app = require('express')();
+const { v4 } = require('uuid');
 
-const router = express.Router();
+app.get('/api', (req, res) => {
+  const path = `/api/item/${v4()}`;
+  res.setHeader('Content-Type', 'text/html');
+  res.setHeader('Cache-Control', 's-max-age=1, stale-while-revalidate');
+  res.end(`Hello! Go to item: <a href="${path}">${path}</a>`);
+});
 
-router.get('/api/words', getWords);
-router.get('/api/words/random', getRandomWord);
-router.post('/api/words', createWord);
-router.get('/api/words/:wordId', getWordDetails);
-router.get('/api/words/:wordId/answers/:answerId', getAnswer);
-router.put('/api/words/:wordId/answers/:answerId', updateAnswer);
-router.get('/api/words/:wordId/results', getWordResults);
+app.get('/api/item/:slug', (req, res) => {
+  const { slug } = req.params;
+  res.end(`Item: ${slug}`);
+});
 
-export default router;
+module.exports = app;

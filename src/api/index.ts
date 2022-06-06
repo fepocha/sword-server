@@ -8,14 +8,15 @@ import {
   updateAnswer,
   getWordResults,
 } from '../controller/words';
-const app = express();
 
-app.get('/api/words', getWords);
-app.get('/api/words/random', getRandomWord);
-app.post('/api/words', createWord);
-app.get('/api/words/:wordId', getWordDetails);
-app.get('/api/words/:wordId/answers/:answerId', getAnswer);
-app.put('/api/words/:wordId/answers/:answerId', updateAnswer);
-app.get('/api/words/:wordId/results', getWordResults);
+const router = express.Router();
 
-export default app;
+router.get('/api/words', getWords);
+router.get('/api/words/random', getRandomWord);
+router.post('/api/words', createWord);
+router.get('/api/words/:wordId', getWordDetails);
+router.get('/api/words/:wordId/answers/:answerId', getAnswer);
+router.put('/api/words/:wordId/answers/:answerId', updateAnswer);
+router.get('/api/words/:wordId/results', getWordResults);
+
+export default router;

@@ -1,12 +1,11 @@
 import * as http from 'http';
 import createError from 'http-errors';
 import express, { ErrorRequestHandler } from 'express';
-import mongoose from 'mongoose';
+
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import config from './config';
 import indexRouter from './routes';
 
 const cors = require('cors');
@@ -14,20 +13,6 @@ const app = express();
 const port = process.env.PORT || '8000';
 const whiteList = ['http://localhost:3000', 'https://www.wordssay.com'];
 
-main();
-
-async function main() {
-  try {
-    const { connections } = await mongoose.connect(config.MONGODB_URI || '');
-    console.log('successful mongo connection');
-    connections.forEach((connection) => {
-      console.log('mongodb host: ' + connection.host);
-      console.log('mongodb port: ' + connection.port);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
 app.use(
   cors({
     origin: function (origin: string, callback: any) {

@@ -49,7 +49,7 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
     const word = await Words.findOne({ _id: { $nin: excludedWords } })
       .skip(randomIndex)
       .exec();
-
+    console.log(word);
     const newAnswer = await new Answers({
       step: 0,
       answers: [],
@@ -61,6 +61,7 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
 
     res.json({ ...word.toJSON(), answerId: newAnswer._id });
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };

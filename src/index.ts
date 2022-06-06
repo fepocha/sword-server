@@ -7,10 +7,10 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
 import config from './config';
-import indexRouter from './api';
+import indexRouter from './routes';
 
 const cors = require('cors');
-const index = express();
+const app = express();
 const port = process.env.PORT || '8000';
 const whiteList = ['http://localhost:3000', 'https://www.wordssay.com'];
 
@@ -28,7 +28,7 @@ async function main() {
     console.log(err);
   }
 }
-index.use(
+app.use(
   cors({
     origin: function (origin: string, callback: any) {
       const isSafeOrigin = whiteList.indexOf(origin) !== -1;
@@ -38,19 +38,19 @@ index.use(
   }),
 );
 // view engine setup
-index.set('views', path.join(__dirname, 'views'));
-index.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-index.use(logger('dev'));
-index.use(express.json());
-index.use(express.urlencoded({ extended: false }));
-index.use(cookieParser());
-index.use(express.static(path.join(__dirname, 'public')));
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-index.use('/', indexRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-index.use(function (req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
@@ -59,16 +59,16 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(err.status || 500);
   res.json(err);
 };
-index.use(errorHandler);
+app.use(errorHandler);
 
-index.set('port', port);
+app.set('port', port);
 
-const server = http.createServer(index);
+const server = http.createServer(app);
 
-index.listen(port, () => {
+app.listen(port, () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
   console.log('Listening on ' + bind);
 });
 
-module.exports = index;
+export default app;

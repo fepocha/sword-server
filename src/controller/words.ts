@@ -4,9 +4,11 @@ import Answers from '../models/Answers';
 import createHttpError from 'http-errors';
 import { isWordInDictionary } from '../services/DictionaryService';
 import { getResultAnswer } from '../services/WordService';
+import { connectDb } from '../services/MongooseService';
 
 export const getWords: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const words = await Words.find().select('-updatedAt').exec();
 
     res.json(words);
@@ -17,6 +19,7 @@ export const getWords: RequestHandler = async (req, res, next) => {
 
 export const createWord: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const { description, createdBy } = req.body;
     const word = req.body.word.toUpperCase();
 
@@ -43,13 +46,14 @@ export const createWord: RequestHandler = async (req, res, next) => {
 
 export const getRandomWord: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const excludedWords = req.query.excludedWords || [];
     const count = await Words.count({ _id: { $nin: excludedWords } }).exec();
     const randomIndex = Math.floor(Math.random() * count);
     const word = await Words.findOne({ _id: { $nin: excludedWords } })
       .skip(randomIndex)
       .exec();
-
+    console.log(word);
     const newAnswer = await new Answers({
       step: 0,
       answers: [],
@@ -61,12 +65,14 @@ export const getRandomWord: RequestHandler = async (req, res, next) => {
 
     res.json({ ...word.toJSON(), answerId: newAnswer._id });
   } catch (e) {
+    console.log(e);
     next(e);
   }
 };
 
 export const getWordDetails: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const { wordId } = req.params;
     const [word, answers] = await Promise.all([
       Words.findById(wordId).select('-updatedAt').exec(),
@@ -81,6 +87,7 @@ export const getWordDetails: RequestHandler = async (req, res, next) => {
 
 export const getAnswer: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const { answerId } = req.params;
 
     const newAnswer = await Answers.findById(answerId).lean().exec();
@@ -93,6 +100,7 @@ export const getAnswer: RequestHandler = async (req, res, next) => {
 
 export const updateAnswer: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const { wordId, answerId } = req.params;
     const answer = req.body.answer.toUpperCase();
 
@@ -117,6 +125,7 @@ export const updateAnswer: RequestHandler = async (req, res, next) => {
 
 export const getWordResults: RequestHandler = async (req, res, next) => {
   try {
+    await connectDb();
     const { wordId } = req.params;
 
     const word = await Words.findById(wordId);

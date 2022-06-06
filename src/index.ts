@@ -10,7 +10,7 @@ import config from './config';
 import indexRouter from './api';
 
 const cors = require('cors');
-const app = express();
+const index = express();
 const port = process.env.PORT || '8000';
 const whiteList = ['http://localhost:3000', 'https://www.wordssay.com'];
 
@@ -28,7 +28,7 @@ async function main() {
     console.log(err);
   }
 }
-app.use(
+index.use(
   cors({
     origin: function (origin: string, callback: any) {
       const isSafeOrigin = whiteList.indexOf(origin) !== -1;
@@ -38,19 +38,19 @@ app.use(
   }),
 );
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+index.set('views', path.join(__dirname, 'views'));
+index.set('view engine', 'ejs');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+index.use(logger('dev'));
+index.use(express.json());
+index.use(express.urlencoded({ extended: false }));
+index.use(cookieParser());
+index.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+index.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+index.use(function (req, res, next) {
   next(createError(404));
 });
 
@@ -59,16 +59,16 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   res.status(err.status || 500);
   res.json(err);
 };
-app.use(errorHandler);
+index.use(errorHandler);
 
-app.set('port', port);
+index.set('port', port);
 
-const server = http.createServer(app);
+const server = http.createServer(index);
 
-app.listen(port, () => {
+index.listen(port, () => {
   const addr = server.address();
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr?.port;
   console.log('Listening on ' + bind);
 });
 
-module.exports = app;
+module.exports = index;

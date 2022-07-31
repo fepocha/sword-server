@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { Schema } from 'mongoose';
 import createHttpError from 'http-errors';
 
-const MAXIMUM_STEP = 5;
+const MAXIMUM_STEP = 6;
 
 export const answerSchema = new Schema(
   {
@@ -63,7 +63,7 @@ answerSchema.pre('findOneAndUpdate', async function (next) {
   const updateAnswer = self._update.$push.answers;
 
   if (answers.includes(updateAnswer)) {
-    next(createHttpError(400, 'Duplicate word entered.'));
+    next(createHttpError(400, 'The word was already submitted'));
   }
 
   if (step === maxStep) {

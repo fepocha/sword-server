@@ -25,7 +25,7 @@ export const createWord: RequestHandler = async (req, res, next) => {
 
     const isValidWord = await isWordInDictionary(word);
     if (!isValidWord) {
-      throw createHttpError(400, 'word is not in dictionary');
+      throw createHttpError(400, 'The word is not in the dictionary');
     }
 
     const newWord = await new Words({
@@ -37,7 +37,7 @@ export const createWord: RequestHandler = async (req, res, next) => {
     res.json(newWord);
   } catch (e: any) {
     if (e.code === 11000) {
-      next(createHttpError(400, 'word must be unique'));
+      next(createHttpError(400, 'The word already exists in database'));
     }
 
     next(e);
